@@ -30,6 +30,7 @@ install_xray() {
     # Убедитесь, что загруженный каталог /opt/xray существует и пуст.
     rm -rf /opt/xray
     mkdir -p /opt/xray
+    cp /root/config.json /opt/xray/config.json
     
     # Распаковка с подробным выводом и проверкой ошибок
     unzip Xray-linux-64.zip -d /opt/xray || {
