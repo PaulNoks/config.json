@@ -4,6 +4,7 @@
 install_dependencies() {
     echo "Installing dependencies..."
     apt-get update
+    sleep 5
     apt-get install -y wget unzip
 }
 
