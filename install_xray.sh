@@ -25,14 +25,14 @@ install_xray() {
     if [ ! -f Xray-linux-64.zip ]; then
         echo "Xray zip file download failed"
         exit 1
-    }
+    fi
     
     # Убедитесь, что загруженный каталог /opt/xray существует и пуст.
     rm -rf /opt/xray
     mkdir -p /opt/xray
     
     # Распаковка с подробным выводом и проверкой ошибок
-    unzip -v Xray-linux-64.zip -d /opt/xray || {
+    unzip Xray-linux-64.zip -d /opt/xray || {
         echo "Failed to unzip Xray files"
         exit 1
     }
@@ -43,8 +43,7 @@ install_xray() {
     # Ensure executable permissions
     chmod +x /opt/xray/xray
     
-    echo "Xray installation completed successfully"
-}
+    # Create systemd service
     cat <<EOT > /usr/lib/systemd/system/xray.service
 [Unit]
 Description=XRay
@@ -56,17 +55,18 @@ WorkingDirectory=/opt/xray
 ExecStart=/opt/xray/xray run -c /opt/xray/config.json
 [Install]
 WantedBy=multi-user.target
-
 EOT
 
     systemctl daemon-reload
     systemctl enable xray
+    
+    echo "Xray installation completed successfully"
 }
 
 # Генерация ключей и UUID
 generate_keys() {
     echo "Generating keys and UUID..."
-    cd /opt/xray
+    cd /opt/xray || { echo "Failed to cd to /opt/xray"; exit 1; }
     UUID=$(./xray uuid)
     KEYS=$(./xray x25519)
     echo "$UUID" > /root/uuid.txt
@@ -97,6 +97,7 @@ generate_client_link() {
 
 # Основная логика
 main() {
+    install_dependencies
     install_xray
     generate_keys
     configure_config
