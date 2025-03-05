@@ -3,6 +3,7 @@
 # Установка Xray
 install_xray() {
     echo "Downloading Xray..."
+    rm -f Xray-linux-64.zip
     wget https://github.com/XTLS/Xray-core/releases/download/v25.2.21/Xray-linux-64.zip
     mkdir -p /opt/xray
     unzip -o ./Xray-linux-64.zip -d /opt/xray
@@ -20,6 +21,7 @@ WorkingDirectory=/opt/xray
 ExecStart=/opt/xray/xray run -c /opt/xray/config.json
 [Install]
 WantedBy=multi-user.target
+
 EOT
 
     systemctl daemon-reload
