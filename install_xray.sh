@@ -14,7 +14,7 @@ install_xray() {
     rm -f Xray-linux-64.zip
     wget https://github.com/XTLS/Xray-core/releases/download/v25.2.21/Xray-linux-64.zip
     mkdir -p /var/log/xray
-    mkdir -p /opt/xray
+    mkdir /opt/xray
     unzip -o ./Xray-linux-64.zip -d /opt/xray
     chmod +x /opt/xray/xray
 
