@@ -11,14 +11,40 @@ install_dependencies() {
 # Установка Xray
 install_xray() {
     echo "Downloading Xray..."
+    
+    # Remove existing zip file
     rm -f Xray-linux-64.zip
-    wget https://github.com/XTLS/Xray-core/releases/download/v25.2.21/Xray-linux-64.zip
-    mkdir -p /var/log/xray
-    mkdir /opt/xray
-    unzip -o ./Xray-linux-64.zip -d /opt/xray
+    
+    # Download with error checking
+    wget https://github.com/XTLS/Xray-core/releases/download/v25.2.21/Xray-linux-64.zip || {
+        echo "Failed to download Xray zip file"
+        exit 1
+    }
+    
+    # Проверьте загруженный файл
+    if [ ! -f Xray-linux-64.zip ]; then
+        echo "Xray zip file download failed"
+        exit 1
+    }
+    
+    # Убедитесь, что загруженный каталог /opt/xray существует и пуст.
+    rm -rf /opt/xray
+    mkdir -p /opt/xray
+    
+    # Распаковка с подробным выводом и проверкой ошибок
+    unzip -v Xray-linux-64.zip -d /opt/xray || {
+        echo "Failed to unzip Xray files"
+        exit 1
+    }
+    
+    # List contents to verify extraction
+    ls -la /opt/xray
+    
+    # Ensure executable permissions
     chmod +x /opt/xray/xray
-
-    echo "Configuring Xray service..."
+    
+    echo "Xray installation completed successfully"
+}
     cat <<EOT > /usr/lib/systemd/system/xray.service
 [Unit]
 Description=XRay
